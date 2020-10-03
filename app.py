@@ -22,7 +22,9 @@ def index():
 
 @app.route("/<route>", methods=['GET', 'POST'])
 def page(route):
-    if (route == 'login') or (session.get('loggedin') != True):
+    if (route == 'signup'):
+        return render_template("signup.html")
+    elif (route == 'login') or (session.get('loggedin') != True):
         if request.method == 'POST':
             try:
                 session['loggedin'] = True
@@ -37,7 +39,9 @@ def page(route):
     if route == 'logout':
         session.pop('loggedin', None)
         return redirect('/login')
+
     return render_template("master.html", page2load=route)
+
 
 @app.route("/page/<route>")
 def half(route):
