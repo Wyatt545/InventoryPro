@@ -27,7 +27,7 @@ def page(route):
             try:
                 session['loggedin'] = True
                 if route == 'login':
-                    return render_template("master.html", page2load='home')
+                    return render_template("master.html", page2load='dashboard')
             except Exception as err:
                 #'An error occurred processing the form. Please try again later. '
                 return render_template("login.html", message=err)

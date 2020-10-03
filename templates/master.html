@@ -58,12 +58,12 @@
         </div>
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item" onclick="load('home',callback=myFunction())">
-                    Home
+                <a class="navbar-item" onclick="load('dashboard',callback=myFunction())">
+                    Dashboard
                 </a>
         
-                <a class="navbar-item" onclick="load('documentation',callback=myFunction())">
-                    Documentation
+                <a class="navbar-item" onclick="load('inventory',callback=myFunction())">
+                    Inventory
                 </a>
         
                 <div class="navbar-item has-dropdown is-hoverable">
@@ -75,16 +75,20 @@
                     <a class="navbar-item" onclick="load('about',callback=myFunction())">
                         About
                     </a>
-                    <a class="navbar-item" onclick="load('jobs',callback=myFunction())">
-                        Jobs
-                    </a>
                     <a class="navbar-item" onclick="load('contact',callback=myFunction())">
                         Contact
                     </a>
-                    <hr class="navbar-divider">
-                    <a class="navbar-item" onclick="load('thisisnotanactualpage')">
-                        Page Not Found (FOR TESTING)
-                    </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-primary" href='/logout'>
+                            <strong>Sign Out</strong>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -95,7 +99,7 @@
             $(this).ready(function(){
                 var route = '{{page2load}}';
                 if (route == ''){
-                    $(this).innerHTML = load('home', '#content');
+                    $(this).innerHTML = load('dashboard', '#content');
                 } else {
                     $(this).innerHTML = load(route, '#content');
                 }
