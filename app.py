@@ -68,6 +68,6 @@ def not_found(e):
 #==========================Main========================================
 
 def main():
-	app.run(host='',port=8080)
+	app.run(host='localhost',port=8080)
 if(__name__ == "__main__"):
 	main()
