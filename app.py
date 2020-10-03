@@ -33,6 +33,14 @@ def modal(route):
         return render_template('/modal/' + route + ".html")
     except TemplateNotFound:
         abort(404) 
+    
+@app.route("/forms/<form>", methods = ["POST"])
+def forms(form):
+    try:
+        raise ValueError("It didnt work. ")
+    except:
+        #'An error occurred processing the form. Please try again later. '
+        return 'Forms are not currently set up on the server. '
 
 @app.errorhandler(404)
 def not_found(e):

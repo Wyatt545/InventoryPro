@@ -22,8 +22,17 @@
                 $.get( "/modal/" + page, function( data ) {
                     $( elem ).html( data );
                     });
-                };
-            
+                }
+            else if (elem == '#form') {
+                $.ajax({
+                    type: "POST",
+                    url: "/forms/" + page,
+                    data: $('#form').serialize(),
+                    success: function(result) {
+                        alert(result);
+                    }
+                });
+            }
 
             if (callback) callback();
         }
@@ -31,7 +40,6 @@
         function closeModal(){
             $('#modal').html('');
         }
-
 
     </script>
 </head>
@@ -87,7 +95,7 @@
                         <a class="button is-primary">
                             <strong>Sign up</strong>
                         </a>
-                        <a class="button is-light">
+                        <a class="button is-light" onclick="load('login', '#modal')">
                             Log in
                         </a>
                     </div>
