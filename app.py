@@ -8,6 +8,8 @@ import sys, os
 
 from flask import Flask, render_template, abort, request, session, redirect, url_for
 from jinja2.exceptions import TemplateNotFound
+from database.DBHelper import DBHelper
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -23,13 +25,47 @@ def index():
 @app.route("/<route>", methods=['GET', 'POST'])
 def page(route):
     if (route == 'signup'):
-        return render_template("signup.html")
+        if request.method == 'POST':
+            try: 
+                ## do signup 
+                db = DBHelper()
+                fname = request.form.get("fname")
+                lname = request.form.get("lname")
+                username = request.form.get("email")
+                password = request.form.get("password")
+                password2 = request.form.get("password2")
+
+                if (password == password2):
+                    success = db.createUser([username, password])
+                else:
+                    success = False
+                
+                if (success):
+                    return render_template("master.html", page2load='dashboard')
+                else: 
+                    return render_template("signup.html", message='Failed to sign up. ')
+
+                ##-- 
+            except Exception as err: 
+                return render_template("signup.html", message='Failed to sign up. Please try again.')
+        else: 
+            return render_template("signup.html")
     elif (route == 'login') or (session.get('loggedin') != True):
         if request.method == 'POST':
             try:
-                session['loggedin'] = True
-                if route == 'login':
+                #try login 
+
+                username = request.form.get("email")
+                password = request.form.get("password")
+
+                db = DBHelper()
+                success = db.authenticate([username, password])
+
+                if (success):
+                    session['loggedin'] = True
                     return render_template("master.html", page2load='dashboard')
+                else: 
+                    return render_template("login.html", message="Failed to login. ")
             except Exception as err:
                 #'An error occurred processing the form. Please try again later. '
                 return render_template("login.html", message=err)

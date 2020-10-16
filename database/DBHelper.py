@@ -35,7 +35,7 @@ class DBHelper:
 			"Salt varchar(16), HUB_ID varchar(50), NET_ID varchar(50), ACU_ID varchar(20), ACCESS_KEY varchar(20))")
 				
 		global keepConnOpen
-		keepConnOpen = active;
+		keepConnOpen = active
 		
 		
 	def db_connect(self):
@@ -71,15 +71,9 @@ class DBHelper:
 		
 		encodedPass = (credentials[1] + salt).encode()
 		sec_pass = hashlib.sha256(encodedPass)
-		
-		HUB_ID = credentials[2]
-		NET_ID = credentials[3]
-		ACU_ID = credentials[4]
-		ACCESS_KEY = credentials[5]
-
 
 		try:
-			conn.execute("INSERT INTO Users (Username, Password, Salt, HUB_ID, NET_ID, ACU_ID, ACCESS_KEY) VALUES (?,?,?,?,?,?,?)", (credentials[0], str(sec_pass.hexdigest()), salt, HUB_ID, NET_ID, ACU_ID, ACCESS_KEY))
+			conn.execute("INSERT INTO Users (Username, Password, Salt) VALUES (?,?,?)", (credentials[0], str(sec_pass.hexdigest()), salt))
 			conn.commit()
 			return True
 		except sqlite3.IntegrityError:
@@ -182,7 +176,7 @@ class DBHelper:
 			Usage: DBHelper.getUsernames()
 		
 		"""
-		curr.execute("SELECT * from Gestures")
+		curr.execute("SELECT * from Users")
 		data = curr.fetchall()
 		print(data)
 		
