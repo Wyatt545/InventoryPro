@@ -61,9 +61,10 @@ class DBHelper:
 			Created by Trenton D Scott
 			Output: Boolean
 			Description: Stores new user in the database. 
-			Usage: DBHelper.createUser([username, password, hub-id, net-id])
+			Usage: DBHelper.createUser([username, password])
 		
 		"""
+
 		CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		salt= ""
 		for i in range(16):
@@ -151,7 +152,7 @@ class DBHelper:
 			return "NoUserExists"
 		if not keepConnOpen: self.disconnect()
 		
-	def getIDByUsername(self, username):
+	def checkUserExists(self, username):
 		"""
 			
 			Created by Trenton D Scott
@@ -162,9 +163,9 @@ class DBHelper:
 		"""
 		curr.execute("SELECT ID FROM Users WHERE Username=?", (username,))
 		try: 
-			return curr.fetchone()[0]
+			return True
 		except:
-			return "NoUserExists"
+			return False
 		if not keepConnOpen: self.disconnect()
 			
 	def dump_table(self):

@@ -28,17 +28,22 @@ def page(route):
         if request.method == 'POST':
             try: 
                 ## do signup 
-                db = DBHelper()
+                db = DBHelper(True)
                 fname = request.form.get("fname")
                 lname = request.form.get("lname")
                 username = request.form.get("email")
                 password = request.form.get("password")
                 password2 = request.form.get("password2")
 
+                if db.checkUserExists(username):
+                    return render_template("signup.html", message='User already exists. ')
+
                 if (password == password2):
                     success = db.createUser([username, password])
                 else:
                     success = False
+
+                db.disconnect()
                 
                 if (success):
                     return render_template("master.html", page2load='dashboard')
