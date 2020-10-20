@@ -31,8 +31,8 @@ class DBHelper:
 		except:
 			#if the above throws an error, the table does not exist and will be created. 
 			#this should only occurs during initial setup. 
-			conn.execute("CREATE TABLE Users ( ID INTEGER PRIMARY KEY, Username varchar(20) UNIQUE, Password varchar(20),"
-			"Salt varchar(16), HUB_ID varchar(50), NET_ID varchar(50), ACU_ID varchar(20), ACCESS_KEY varchar(20))")
+			conn.execute("CREATE TABLE Users (Username varchar(20) UNIQUE, Password varchar(20),"
+			"Salt varchar(16)")
 				
 		global keepConnOpen
 		keepConnOpen = active
