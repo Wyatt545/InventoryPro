@@ -114,7 +114,7 @@ class DBHelper:
 				return False
 
 		except:
-			print("Could not execute query on database. The database could be closed. ")
+			print("Could not execute query on database. The database connection could be closed. ")
 		if not keepConnOpen: self.disconnect()
 
 		
@@ -128,7 +128,7 @@ class DBHelper:
 			Usage: DBHelper.getUsernames()
 		
 		"""
-		curr.execute("SELECT Username from Users");
+		curr.execute("SELECT Username from Users")
 		userList = []
 		usernames = curr.fetchall()
 		if not keepConnOpen: self.disconnect()
@@ -161,11 +161,15 @@ class DBHelper:
 			Usage: DBHelper.getIdByUsername(String)
 		
 		"""
-		curr.execute("SELECT ID FROM Users WHERE Username=?", (username,))
-		try: 
-			return True
+		
+		try:
+			curr.execute("SELECT * FROM Users WHERE UserName=?", (username,))
+			if curr.rowcount < 1:
+				return False
+			else: 
+				return True
 		except:
-			return False
+			return True
 		if not keepConnOpen: self.disconnect()
 			
 	def dump_table(self):
