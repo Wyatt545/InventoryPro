@@ -1,8 +1,7 @@
 """
 	Created by Trenton Scott
-	Created on 02/23/2018
+	Created on 10.20.2020
 	Purpose: The purpose of this class is to assist with database interaction 
-	on the FandRec client. 
 """
 
 import sqlite3, random, hashlib
@@ -24,15 +23,17 @@ class DBHelper:
 							after 1 transaction. 
 		
 		"""
-		
-		self.db_connect()
+	
 		try:
-			conn.execute("SELECT * FROM Users")
-		except:
+			self.db_connect()
+		except sqlite3.Error:
 			#if the above throws an error, the table does not exist and will be created. 
 			#this should only occurs during initial setup. 
-			conn.execute("CREATE TABLE Users (Username varchar(20) UNIQUE, Password varchar(20),"
-			"Salt varchar(16)")
+			print("Error connecting to DB. ")
+
+		global conn, curr
+		self.conn = conn
+		self.curr = curr
 				
 		global keepConnOpen
 		keepConnOpen = active
@@ -54,123 +55,6 @@ class DBHelper:
 			print("An error was encountered while trying to connect to the database. ")
 		global curr
 		curr = conn.cursor()	
-
-	def createUser(self, credentials):
-		"""
-			
-			Created by Trenton D Scott
-			Output: Boolean
-			Description: Stores new user in the database. 
-			Usage: DBHelper.createUser([username, password])
-		
-		"""
-
-		CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		salt= ""
-		for i in range(16):
-			salt += random.choice(CHARS)
-		
-		encodedPass = (credentials[1] + salt).encode()
-		sec_pass = hashlib.sha256(encodedPass)
-
-		try:
-			conn.execute("INSERT INTO Users (Username, Password, Salt) VALUES (?,?,?)", (credentials[0], str(sec_pass.hexdigest()), salt))
-			conn.commit()
-			return True
-		except sqlite3.IntegrityError:
-			return False
-
-		if not keepConnOpen: self.disconnect()
-
-	def authenticate(self, credentials):
-		"""
-			
-			Created by Trenton D Scott
-			Output: Boolean
-			Description: Returns true on successful authentication 
-			Usage: DBHelper.getUsernames()
-		
-		"""
-		username = credentials[0]
-		password = credentials[1]
-
-		
-		try: 
-			try:
-				curr.execute("SELECT Salt FROM Users WHERE Username=?", (username,))
-				salt = curr.fetchone()[0]
-				encodedPass = (password + salt).encode()
-				testHash = hashlib.sha256(encodedPass).hexdigest()
-
-				curr.execute("SELECT Password FROM Users WHERE Username=?", (username,))
-
-				storedHash = curr.fetchone()[0]
-			except:
-				return False
-
-			if (testHash == storedHash):
-				return True
-			else:
-				return False
-
-		except:
-			print("Could not execute query on database. The database connection could be closed. ")
-		if not keepConnOpen: self.disconnect()
-
-		
-		
-	def getUsernames(self):
-		"""
-			
-			Created by Trenton D Scott
-			Output: List [String, ...]
-			Description: Returns username from database based on ID. 
-			Usage: DBHelper.getUsernames()
-		
-		"""
-		curr.execute("SELECT Username from Users")
-		userList = []
-		usernames = curr.fetchall()
-		if not keepConnOpen: self.disconnect()
-		for x in usernames:
-			userList.append(x[0])
-		return userList
-
-	def getUsernameById(self, ID):
-		"""
-			
-			Created by Trenton D Scott
-			Output: String
-			Description: Returns username from database based on ID. 
-			Usage: DBHelper.getUserNameById(Integer)
-		
-		"""
-		curr.execute("SELECT Username FROM Users WHERE ID=?", (ID,))
-		try:
-			return curr.fetchone()[0]
-		except: 
-			return "NoUserExists"
-		if not keepConnOpen: self.disconnect()
-		
-	def checkUserExists(self, username):
-		"""
-			
-			Created by Trenton D Scott
-			Output: String
-			Description: Returns ID from database based on username. 
-			Usage: DBHelper.getIdByUsername(String)
-		
-		"""
-		
-		try:
-			curr.execute("SELECT * FROM Users WHERE UserName=?", (username,))
-			if curr.rowcount < 1:
-				return False
-			else: 
-				return True
-		except:
-			return True
-		if not keepConnOpen: self.disconnect()
 			
 	def dump_table(self):
 		"""

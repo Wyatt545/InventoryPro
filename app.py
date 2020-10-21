@@ -8,7 +8,7 @@ import sys, os
 
 from flask import Flask, render_template, abort, request, session, redirect, url_for
 from jinja2.exceptions import TemplateNotFound
-from database.DBHelper import DBHelper
+from database.DBAuth import DBAuth
 
 
 app = Flask(__name__)
@@ -28,7 +28,7 @@ def page(route):
         if request.method == 'POST':
             try: 
                 ## do signup 
-                db = DBHelper(True)
+                db = DBAuth()
                 fname = request.form.get("fname")
                 lname = request.form.get("lname")
                 username = request.form.get("email")
@@ -42,8 +42,6 @@ def page(route):
                     success = db.createUser([username, password])
                 else:
                     success = False
-
-                db.disconnect()
                 
                 if (success):
                     return render_template("master.html", page2load='dashboard')
@@ -63,7 +61,7 @@ def page(route):
                 username = request.form.get("email")
                 password = request.form.get("password")
 
-                db = DBHelper()
+                db = DBAuth()
                 success = db.authenticate([username, password])
 
                 if (success):
