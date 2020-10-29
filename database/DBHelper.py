@@ -68,6 +68,23 @@ class DBHelper:
 		curr.execute("SELECT * from Users")
 		data = curr.fetchall()
 		print(data)
+
+	def setup(self):
+		"""
+			
+			Created by Wyatt B Hupe'
+			Output: List [String, ...]
+			Description: Database setup. CAUTION Wipes database. 
+			Usage: DBHelper.getUsernames()
 		
+		"""
+		try:
+			curr.execute("DROP TABLE IF EXISTS Users;")
+			curr.execute("CREATE TABLE Users (Username varchar(20) UNIQUE, Password varchar(20), Salt varchar(16));")
+		except sqlite3.OperationalError:
+			pass 
+		
+		if not keepConnOpen: self.disconnect()
+
 	def disconnect(self):
 		conn.close()
